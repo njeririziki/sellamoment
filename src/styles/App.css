@@ -3,7 +3,8 @@
   flex-direction: column;
 }
 .Content{
-  padding: 5rem ;
+  margin: 4rem;
+  
   text-align: center;
 }
 .App-logo {
@@ -38,5 +39,11 @@
   }
   to {
     transform: rotate(360deg);
+  }
+}
+@media (max-width: 435px) {
+  .Content{
+    margin: 1rem;
+    padding-top: 2rem;
   }
 }

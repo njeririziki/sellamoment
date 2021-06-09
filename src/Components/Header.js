@@ -1,12 +1,12 @@
 import React from 'react';
 import {PageHeader,Button} from 'antd'
 
-const Header = ({title}) => {
+const Header = ({subtitle}) => {
     return ( 
     <div style={{backgroundColor:'#ecfffd'}}>
     <PageHeader
     title= 'Sellamoment'
-    subtitle={title}
+    subtitle={subtitle}
     extra={[
         <Button
         onClick={console.log('go to admin')}>
