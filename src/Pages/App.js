@@ -5,6 +5,8 @@ import CreatePost from '../Components/Modals/CreatePost'
 import PageHeader from '../Components/Header'
 import UserList from '../Components/List/UserList'
 import AdminList from '../Components/List/AdminList'
+import AdminProvider from '../Context/AdminContext'
+import PostList from '../Components/List/PostList'
 //import {projectFirestore,firebase, projectAuth} from  './Firebase/config'
 
 function App() {
@@ -12,7 +14,8 @@ const [visible,setVisible] =useState(false)
 
 
   return (
-    <div className="App">
+    <AdminProvider>
+      <div className="App">
       <PageHeader subtitle='Dashboard'/>
      <div className='Content'>
        {/* <div>
@@ -26,13 +29,16 @@ const [visible,setVisible] =useState(false)
         Create a post
       </Button>
        </div> */}
-     
+    <PostList title= 'News'/>
       <UserList/>
-      <AdminList/>
+
        </div> 
      
       <CreatePost visible={visible} onCancel={()=>setVisible(false)}/>
+ 
     </div>
+    </AdminProvider>
+   
   );
 }
 

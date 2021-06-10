@@ -1,19 +1,26 @@
-import React,{useEffect} from 'react';
-import Firebase from '@/firebase/config'
+import React,{useEffect,useState} from 'react';
+import {projectAuth} from '../Firebase/config'
 
 const AuthContext = React.createContext();
 
 const AuthProvider = ({children})=>{
     
-    const [user,setUser] = React.useState(null);
-  
+    const [user,setUser] = useState(null);
+    const [admin, setAdmin]= useState(false)
 
     useEffect (()=>{
-        Firebase.auth().onAuthStateChanged(setUser) 
+      projectAuth.onAuthStateChanged(setUser)
+     if(user){
+        const email = projectAuth.currentUser.email
+        if(email==='admin@sellamoment.com'){
+            setAdmin(true);
+     }
+     }
+
         
-    },[]);
+    },[user]);
     return (
-        <AuthContext.Provider value={{user}}>
+        <AuthContext.Provider value={{user,admin}}>
             {children}
         </AuthContext.Provider>
     )

@@ -3,12 +3,13 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import 'antd/dist/antd.css'
 import SignIn from './Pages/SignIn'
-import App from './Pages/App';
+//import App from './Pages/App';
+import Router from './Routing/Router'
 import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Router />
   </React.StrictMode>,
   document.getElementById('root')
 );

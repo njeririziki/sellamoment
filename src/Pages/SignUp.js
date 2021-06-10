@@ -31,7 +31,11 @@ const SignIn = ({history}) => {
             try {
                 await projectAuth.signInWithEmailAndPassword(values);
     
-                     history.push("/");
+                //   if (email.value === 'admin@edime.com'){
+                //     return history.push("/adminpanel")
+                    
+                //   }else{
+                   // history.push("/");
                     message.success('Sucessfuly logged in')
 
         
@@ -64,6 +68,13 @@ const SignIn = ({history}) => {
                      <UnlockOutlined className='icon'/>
                     </FormItem>
                     <FormItem
+                        name="username"
+                        label="Username"
+                        rules={[{required: true, message: 'Username is required'}]}>
+                        <Input size="large" placeholder="Username" />
+                    </FormItem>
+
+                    <FormItem
                         name="email"
                         label="email"
                         rules={[{required: true,
@@ -84,6 +95,7 @@ const SignIn = ({history}) => {
                            iconRender={(visible) => (visible ? <EyeOutlined /> : <EyeInvisibleOutlined />)} 
                            />
                     </FormItem>
+                
                     <FormItem
                         // className={styles[screens.xs ? 'mobile-button' : 'desktop-button']}
                     >
@@ -104,24 +116,23 @@ const SignIn = ({history}) => {
                             Sign in 
                         </Button>
                     </FormItem>
-                    <FormItem>
-                        <Typography.Text type='secondary'> <b>Forgot password? </b><br/>
+                    <FormItem >
+                        <Typography.Text type='secondary'>
+                             <b> Do you alredy have an account? </b><br/>
                         </Typography.Text>
-                        <Typography.Link >
-                        <QuestionCircleOutlined className='icon'/>
-                         Please contact support 
-                        </Typography.Link>     
+                     <Link to ='/login'> 
+                     <Typography>
+                        Log In instead
+                        </Typography>  
+                     </Link>    
                     </FormItem>
-                    <FormItem>
-                    <Link to ='/signup'> 
-                    <Typography>
-                            Create an account
-                        </Typography>
-                   
-                    </Link>
-                    </FormItem>   
+                    
             
                 </Form>
+          
+
+
+
 
     </Space>
       

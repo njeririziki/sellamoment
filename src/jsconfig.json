@@ -2,11 +2,11 @@
     "compilerOptions": {
       "baseUrl": ".",
       "paths": {
-        "components/*": ["./Components/*"],
-        "pages/*":["./Pages/*"],
-        "styles/*":["./styles/*"],
-        "context/*":["./Context/*"],
-        "@/firebase/*":["./Firebase/*"]
+        "components/*": ["Components/*"],
+        "pages/*":["Pages/*"],
+        "styles/*":["styles/*"],
+        "context/*":["Context/*"],
+        "@/firebase/*":["Firebase/*"]
       }
     }
   }

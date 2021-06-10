@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import { Button, Modal, Form, Input, Upload, InputNumber, message,Select } from 'antd';
 import { LoadingOutlined,UploadOutlined } from '@ant-design/icons';
-import {projectFirestore,projectStorage,firebase, projectAuth} from  '../../Firebase/config'
+import {projectFirestore,firebase, projectAuth,date} from  '../../Firebase/config'
 
 const CreatePost = ({visible,onCancel}) => {
     const [form] = Form.useForm();
@@ -10,16 +10,16 @@ const CreatePost = ({visible,onCancel}) => {
 
     const onFinish = async (values) => {
      console.log(values);
-      const user= projectAuth.currentUser.uid
-       if(user ) {
-        console.log( `User is ${user}`)
-       } 
+      const {uid, displayName}= projectAuth.currentUser
+      
       try{
-          await projectFirestore.collection('Blogs').doc(user).set({
+          await projectFirestore.collection('Posts').add({
             Title: values.title,
-            Author:values.authorname,
+            Author: displayName,
             Content:values.content,
-            Status: 'pending'
+            Status: 'pending',
+            createdAt: date ,
+            uid
           })
           onCancel();
           message.success('Post successful')
@@ -78,28 +78,29 @@ const CreatePost = ({visible,onCancel}) => {
               label="Author's Name" >
                 <Input/>
               </Form.Item>
-            <Form.Item
-            label="Date of Publication"
-            name="date"
-            rules={[
-              {
-                required: true,
-                message: 'Please fill this field',
-              },
-            ]}
-          >
-            <Input type='number' />
-          </Form.Item>
+         
           
           <Form.Item
-            label="Create blog"
+            label="Write post"
             name="content"
        
           >
-            <Input.TextArea showCount allowClear autoSize />
+            <Input.TextArea 
+            rows={4} showCount allowClear autoSize />
           </Form.Item>
           
-          <Form.Item name="document" label=" Import Article" 
+       
+            
+          </Form>
+                 
+        </Modal>
+      );
+}
+ 
+export default CreatePost;
+
+// I keep this code here just incase there should be need to import a document
+   /* <Form.Item name="document" label=" Import Article" 
            rules={[
             {
               required: false,
@@ -115,17 +116,6 @@ const CreatePost = ({visible,onCancel}) => {
             // onChange={upload} 
               /> 
                Import Document 
-            </label>
-            
+            </label> 
+            </Form.Item>*/
           
-            </Form.Item>
-        
-          
-    
-          </Form>
-                 
-        </Modal>
-      );
-}
- 
-export default CreatePost;
