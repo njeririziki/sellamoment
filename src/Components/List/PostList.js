@@ -3,40 +3,34 @@ import {  Tooltip, List, Avatar, Typography } from 'antd';
 import moment from 'moment';
 import {Link} from 'react-router-dom'
 import { StarOutlined } from '@ant-design/icons';
+import {projectFirestore, projectAuth} from  '../../Firebase/config'
 
-const data = [
-  {
-    title:' Dreams',
-    author: 'Njeri Kariuki',
-    avatar: '',
-    content: ( <p> Experts believe that daydreaming could be the product of a collection of 
-    brain regions known as the default mode network. </p> ),
-    datetime: (
-      <Tooltip title={moment().subtract(1, 'days').format('YYYY-MM-DD HH:mm:ss')}>
-        <span>{moment().subtract(1, 'days').fromNow()}</span>
-      </Tooltip>
-    ),
-  },
-  {
-    title: 'Defaults network mode',
-    author: 'Njeri Kariuki',
-    avatar: '',
-    content: (
-      <p>
-       The default mode network is important in producing conscious experiences, and some research has 
-       shown it to increase in activity when someone is daydreaming.
-      </p>
-    ),
-    datetime: (
-      <Tooltip title={moment().subtract(2, 'days').format('YYYY-MM-DD HH:mm:ss')}>
-        <span>{moment().subtract(2, 'days').fromNow()}</span>
-      </Tooltip>
-    ),
-  },
-];
+
 
 const PostList = ({title}) => {
    const [ellipsis,setEllipsis] = useState( false)
+   const [values,setValues] = useState([])
+
+
+   React.useEffect(()=>{
+    const unsub = projectFirestore.collection('Posts') 
+      .orderBy('createdAt')
+         .get().then((docSnapshot)=>{
+          const post=[];
+         docSnapshot.forEach((doc)=>{
+              post.push({
+                  title:  doc.data().Title,
+                  author:doc.data().Author,
+                  content:doc.data().Content,
+                  status: doc.data().Status,
+                  key: doc.id})  
+            });
+            setValues(post) ; 
+        }).catch ((error)=>alert(error)) 
+      return () => unsub;
+
+    },[])
+
     return (
         <div>
         <List
@@ -45,7 +39,7 @@ const PostList = ({title}) => {
                    {title}
         </Typography.Title>}
         itemLayout="vertical"
-        dataSource={data}
+        dataSource={values}
         renderItem={item=> (
           <List.Item key={item.key}
           // actions={[  <Link to='/'>

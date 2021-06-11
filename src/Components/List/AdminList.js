@@ -23,7 +23,6 @@ const PostList = ({data,title,repost}) => {
       
       
       React.useEffect(()=>{
-      const user = projectAuth.currentUser.uid
       const unsub = projectFirestore.collection('Posts') 
         .orderBy('createdAt')
    

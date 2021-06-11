@@ -17,31 +17,24 @@ const SignIn = ({history}) => {
   
     const [loading,setLoading]= useState(false)
 
-    // useEffect(() => {
-    //  if(loading){
-    //      setLoad(true)
-    //  }
-    //  if(loggedIn){
-    //      router.push('/')
-    //  }
-    // }, [loggedIn,loading])
     const onFinish = async(values)=>{
         setLoading(true)
         
             try {
-                await projectAuth.signInWithEmailAndPassword(values);
+                await projectAuth.createUserWithEmailAndPassword(values.email,values.password)
+                .then(user=> {
+                    console.log(user)
+                    // user.updateProfile({
+                    //     displayName: values.username
+                    // })
+                }).catch((err)=> console.log(`error creating user ${err}`));
     
-                //   if (email.value === 'admin@edime.com'){
-                //     return history.push("/adminpanel")
-                    
-                //   }else{
-                   // history.push("/");
-                    message.success('Sucessfuly logged in')
+                    message.success('Successfuly logged in')
 
         
         }catch(error){
            message.error(` Encountering ${error}`);
-
+           console.log(`error creating user ${error}`)
         };
         setLoading(false)
             
@@ -53,8 +46,6 @@ const SignIn = ({history}) => {
 
     return (
              <Space size="large" direction="horizontal" className={'root'}>
-           
-
                 <Form
                     form={form}
                     name="basic"
@@ -76,7 +67,7 @@ const SignIn = ({history}) => {
 
                     <FormItem
                         name="email"
-                        label="email"
+                        label="Email"
                         rules={[{required: true,
                          type:'email',
                         message: 'email is required'}]}>
@@ -113,7 +104,7 @@ const SignIn = ({history}) => {
                             htmlType="submit"
                            
                            >
-                            Sign in 
+                            Register
                         </Button>
                     </FormItem>
                     <FormItem >
