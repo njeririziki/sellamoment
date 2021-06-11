@@ -1,97 +1,131 @@
-import React, {useState, useEffect} from 'react';
-import {Tag} from 'antd';
-import List from './ArticlesList';
-import CreatePost from '../Modals/CreatePost'
-import {projectFirestore,projectStorage,firebase, projectAuth} from  '../..//Firebase/config'
+import React, {useState} from 'react';
+import {  Form,Input,Tooltip, List, Avatar, Typography, Button, message } from 'antd';
+import moment from 'moment';
+import {Link} from 'react-router-dom'
+import { RestFilled, UserOutlined } from '@ant-design/icons';
+import {projectFirestore, projectAuth} from  '../../Firebase/config'
 
-const columns = [
-    { title: 'Author', dataIndex: 'user', key: 'user',  },  
-    { title: 'Title', dataIndex: 'Title', key: 'title',  },  
-    { title: ' Date ', dataIndex: 'Date', key: 'date', 
-    sorter: (a,b)=> a.amount - b.amount, 
-    sortOrder: 'descend',
-    responsive: ['md'] },
- 
-    {
-        title: 'Status',
-        key: 'status',
-        dataIndex: 'status',
-        render: (tag,color)=> {
-              if (tag === 'Declined') {
-                color = 'volcano';
-              } 
-              if(tag === 'Approved'){ 
-                  color ='green'}
-                  if(tag === 'Pending'){ 
-                    color ='blue'}
-              return (
-                <Tag color={color} key={tag}>
-                  {tag}
-                </Tag>
-              );
-            },
-       filters: [
-        {
-          text: 'Approved',
-          value: 'approved',
-        },
-        {
-            text: 'Pending',
-            value: 'pending',
-          },
-        {
-          text: 'Declined',
-          value: 'declined',
-        },
-      ],
-      onFilter: (value, record) => record.status.indexOf(value) === 0,
-      },
-      {
-        title: 'Action', key: 'action',
-        render: (text, record) => (
-        //<Link href='/client_id' as={`/client_${record.key}`}>  </Link>   
-        <a> Read</a>
-       
-        ), 
-      },
-      {
-        title: 'Action', key: 'action',
-        render: (text, record) => (
-        //<Link href='/client_id' as={`/client_${record.key}`}>  </Link>   
-        <a> Edit</a>
-       
-        ), 
-      },
-    
-  ];
+const EditForm = ({key,defValue,settext,onedit})=>{
+ return(
+  <Form.Item>
+  <Input.TextArea id={key} defaultValue={defValue}
+  onChange={settext} onPressEnter={onedit}/>
+</Form.Item>
+ )
 
-const UserList = () => {
-    const [visible, setVisible] = useState(false)
-    const [docs, setDocs] = useState([]);
-
-    useEffect(() => {
-        const unsub = projectFirestore.collection('Blogs')
-          .orderBy('date')
-          .onSnapshot(snap => {
-            let documents = [];
-            snap.forEach(doc => {
-              documents.push({...doc.data(), id: doc.id});
-            });
-            setDocs(documents);
-          });
-    
-        return () => unsub();
-        // this is a cleanup function that react will run when
-        // a component using the hook unmounts
-      }, []);
-
-    return ( 
-        <div>
-        <List columns={columns} tableTitle='Blogs' buttonName='Create a Post' 
-        openModal={()=>setVisible(true)} data={docs} />
-         <CreatePost visible={visible} onCancel={()=>setVisible(false)}/>
-        </div>
-     );
 }
- 
-export default UserList;
+
+const PostList = ({data,title,repost}) => {
+    const [editableText,setEditableText] = useState();
+    const [values,setValues] = useState([])
+    const [edit, setEdit] = useState(false)
+    const [selectedKey, setSelectedKey] =useState(null)
+      
+      
+      React.useEffect(()=>{
+      const user = projectAuth.currentUser.uid
+      const unsub = projectFirestore.collection('Posts') 
+        .orderBy('createdAt')
+   
+           .get().then((docSnapshot)=>{
+            const post=[];
+           docSnapshot.forEach((doc)=>{
+                post.push({
+                    title:  doc.data().Title,
+                    author:doc.data().Author,
+                    content:doc.data().Content,
+                    status: doc.data().Status,
+                    key: doc.id})  
+              });
+              setValues(post) ; 
+          }).catch ((error)=>alert(error)) 
+        return () => unsub;
+
+      },[])
+
+      const onEdit =()=>{
+        console.log(editableText,selectedKey);
+         console.log(values.findIndex(key => key === selectedKey))
+        setValues([...values, 
+          values[1].content= editableText])
+          console.log( values)
+      }
+  
+        const onRepost = async () => {
+          console.log(editableText,selectedKey)
+           try{
+               await projectFirestore.collection('Posts').doc(selectedKey).update({
+                 Content: editableText, 
+               })
+               //onCancel();
+
+               message.success('Repost successful')
+     
+           }catch(error) {
+               message.error(`error uploading doc ${error}`);
+               console.log(error)
+           }
+         }
+
+     return (
+         <div>
+          
+         <List
+         header={<Typography.Title level={4}>
+                {title}
+         </Typography.Title>}
+         itemLayout="vertical"
+         dataSource={values}
+         rowKey={values.key}
+         renderItem={item=> (
+           <List.Item 
+           key={item.key}
+           actions={[   
+              <Button
+              style={{ backgroundColor:'#f05545',color:'#ffffff',}}
+              type='default'
+            onClick={() => setEdit(true)}
+          >
+            Decline
+          </Button> ,
+           <Button
+           style={{ backgroundColor:'#88c399',color:'#ffffff'}}
+           type='default'
+           onClick={onRepost}>
+                     Verify
+                     </Button>]}  >
+                     <List.Item.Meta 
+                      avatar= {<Avatar  size={64} icon={<UserOutlined />} />}
+                        title={  <Typography.Title level={5}>
+                                {item.title}  
+                                </Typography.Title>
+                              }
+                    description= {
+                      <Typography.Text
+                      style={{color:'#00766c'}}>
+                      Post by {item.author? item.author :'anonymous'}
+                        </Typography.Text>
+                      }
+                        />
+              
+               <Typography.Text 
+                 
+                 editable={{
+                   onStart: setSelectedKey(item.key),
+                   onChange: setEditableText,
+                   onEnd: onEdit
+                 }}
+                >
+               {item.content} 
+                   </Typography.Text> 
+           
+          
+          
+               </List.Item>)}
+    
+       />
+   
+       </div>
+       )}
+  
+ export default PostList;

@@ -1,99 +1,142 @@
 import React, {useState} from 'react';
-import {  Tooltip, List, Avatar, Typography, Button, message } from 'antd';
+import {  Form,Input,Tooltip, List, Avatar, Tag, Typography, Button, message } from 'antd';
 import moment from 'moment';
 import {Link} from 'react-router-dom'
-import { UserOutlined } from '@ant-design/icons';
+import { RestFilled, UserOutlined } from '@ant-design/icons';
 import {projectFirestore, projectAuth} from  '../../Firebase/config'
 
+const EditForm = ({key,defValue,settext,onedit})=>{
+ return(
+  <Form.Item>
+  <Input.TextArea id={key} defaultValue={defValue}
+  onChange={settext} onPressEnter={onedit}/>
+</Form.Item>
+ )
 
-const PostList = ({data,title,repost}) => {
-    const [editableText,setEditableText] = useState( );
+}
+
+const PostList = ({data,title,repost, openModal,buttonName}) => {
+    const [editableText,setEditableText] = useState();
     const [values,setValues] = useState([])
+    const [edit, setEdit] = useState(false)
+    const [selectedKey, setSelectedKey] =useState(null)
       
       
       React.useEffect(()=>{
-      const uid = projectAuth.currentUser.uid
-      const userRef = projectFirestore.collection('Blogs').doc(uid)
-      
-        try{
-           userRef.get().then((docSnapshot)=>{
-          if(docSnapshot.exists){
-           userRef.onSnapshot((doc)=>{
-              const goal=[]
-                goal.push({
+      const user = projectAuth.currentUser.uid
+      const unsub = projectFirestore.collection('Posts') 
+        .orderBy('createdAt')
+   
+           .get().then((docSnapshot)=>{
+            const post=[];
+          
+           docSnapshot.forEach((doc)=>{
+                post.push({
                      title:  doc.data().Title,
                     author:doc.data().Author,
                     content:doc.data().Content,
                     status: doc.data().Status,
-                    key: doc.id,
-                })
-               setEditableText(doc.data().Content)
-              setValues(goal) ; 
-
+                    key: doc.id})  
               });
-            }    
-          }); 
-        } catch (error){
-           alert(error)
-        }   
-      
-      
+              setValues(post) ; 
+          }).catch ((error)=>alert(error)) 
+        return () => unsub;
+
       },[])
+
+      const onEdit =()=>{
+        console.log(editableText,selectedKey);
+        setValues([...values, 
+          values[1].content= editableText])
+          console.log( values)
+      }
   
-        const onRepost = async (values) => {
-          console.log(values);
-           const user= projectAuth.currentUser.uid
-            if(user ) {
-             console.log( `User is ${user}`)
-            } 
+        const onRepost = async () => {
+          console.log(editableText,selectedKey)
            try{
-               await projectFirestore.collection('Blogs').doc(user).update({
+               await projectFirestore.collection('Posts').doc(selectedKey).update({
                  Content: editableText, 
                })
                //onCancel();
+
                message.success('Repost successful')
      
            }catch(error) {
-               message.error(`error uploading doc ${error}`)
+               message.error(`error uploading doc ${error}`);
+               console.log(error)
            }
          }
 
      return (
          <div>
+           <div style={{  display:'flex',justifyContent:'space-between',
+              alignItems:'center' ,padding:' 2em '}}>
+         <Typography.Title level={5}>
+             {title}
+             </Typography.Title>   
+        <Button
+        style={{ alignSelf:'flex-end',backgroundColor:'#88c399',color:'#ffffff',}}
+        
+        type='default'
+        onClick={openModal}
+       // icon={<Plus size={'1em'}/>}
+       >
+         {buttonName}
+        </Button>
+        </div>
          <List
-         header={<Typography.Title level={4}>
-                {title}
-         </Typography.Title>}
-         itemLayout="horizontal"
+        
+         itemLayout="vertical"
          dataSource={values}
+         rowKey={values.key}
          renderItem={item=> (
-           <List.Item key={item.key}
-           actions={[ <Button onClick={onRepost}>
-                     Repost
-                     </Button>]}  >
-               <List.Item.Meta 
-              avatar= {<Avatar size="large" icon={<UserOutlined />} />}
-               title={  <Typography.Title level={5}>
-                       <b>{item.title}</b>  <br/>
-                        </Typography.Title>
-                     }
-               description= {<Typography.Paragraph 
+           <List.Item 
+           key={item.key}
+           actions={[ 
+              <Tag color='gold'>
+           {item.status}
+         </Tag>, 
+              <a href='/'
+            onClick={() => setEdit(true)}
+            style={{
+              marginRight: 8,
+            }}
+          >
+            Edit
+          </a> ,
+           <a  href='/'
+           onClick={onRepost}>
+                     Save
+                     </a>]}  >
+                     <List.Item.Meta 
+             avatar= {<Avatar  size={64} icon={<UserOutlined />} />}
+              title={  <Typography.Title level={5}>
+                      {item.title}  
+                       </Typography.Title>
+                    }
+                    />
+              {/* {edit? 
+              <EditForm key={item.key} defValue={item.content}
+                settext={ 
+                  (e,)=> setValues([...values, 
+                   values[1].content= e.target.value])
+                }  onedit={onEdit}/>  */}
+               <Typography.Text 
+                 
                  editable={{
-                   tooltip: false,
-                   onChange: setEditableText
-                 }}>
-                {editableText}
-                 </Typography.Paragraph>}
-               />
-              {/* <div>  
-              { item.avatar? <Link href='/client_id' as={`/client_${item.key}`}>
-           <a>Manage</a>
-           </Link>:'' } 
-              </div>
-           */}
+                   onStart: setSelectedKey(item.key),
+                   onChange: setEditableText,
+                   onEnd: onEdit
+                 }}
+                >
+               {item.content} 
+                   </Typography.Text> 
+           
+          
                </List.Item>)}
     
        />
+   
        </div>
        )}
   

@@ -64,8 +64,7 @@ const UserList = () => {
 
     return ( 
         <div>
-        <List title=' My Posts'  data={values}
-        repost={ ()=> message.success('Reposted')} />
+        <List title=' My Posts'  data={values}/>
         
          <CreatePost visible={visible} onCancel={()=>setVisible(false)}/>
         </div>

@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {  Tooltip, List, Avatar, Typography } from 'antd';
 import moment from 'moment';
 import {Link} from 'react-router-dom'
-import { UserOutlined } from '@ant-design/icons';
+import { StarOutlined } from '@ant-design/icons';
 
 const data = [
   {
@@ -44,7 +44,7 @@ const PostList = ({title}) => {
         header={ <Typography.Title level={4}>
                    {title}
         </Typography.Title>}
-        itemLayout="horizontal"
+        itemLayout="vertical"
         dataSource={data}
         renderItem={item=> (
           <List.Item key={item.key}
@@ -53,13 +53,19 @@ const PostList = ({title}) => {
           //           </Link>]}
           >
               <List.Item.Meta 
-             avatar= {<Avatar size="large" icon={<UserOutlined />} />}
+             avatar= {<Avatar 
+              size={64} icon={<StarOutlined />} />}
               title={  <Typography.Title level={5}>
-                      <b>{item.title}</b>  
-                       
+                      {item.title}  
                        </Typography.Title>
                     }
-              description= {<Typography.Paragraph 
+              description= {
+                <Typography.Text style={{color:'#00766c'}}>
+             Post by {item.author? item.author :'anonymous'}
+              </Typography.Text>
+             }
+              />
+               <Typography.Paragraph 
                 ellipsis={
                   ellipsis
                     ? {
@@ -70,11 +76,8 @@ const PostList = ({title}) => {
                     : false
                 }>
                 {item.content}
-                </Typography.Paragraph>}
-              />
-              <Typography.Text>
-              <b>{item.author}</b> 
-              </Typography.Text>
+                </Typography.Paragraph>
+              
              {/* <div>  
              { item.avatar? <Link href='/client_id' as={`/client_${item.key}`}>
           <a>Manage</a>
