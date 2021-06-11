@@ -24,9 +24,8 @@ const PostList = ({data,title,repost}) => {
       
       React.useEffect(()=>{
       const unsub = projectFirestore.collection('Posts') 
-        .orderBy('createdAt')
-   
-           .get().then((docSnapshot)=>{
+        .orderBy('createdAt', 'desc')
+           .onSnapshot((docSnapshot)=>{
             const post=[];
            docSnapshot.forEach((doc)=>{
                 post.push({
@@ -37,8 +36,8 @@ const PostList = ({data,title,repost}) => {
                     key: doc.id})  
               });
               setValues(post) ; 
-          }).catch ((error)=>alert(error)) 
-        return () => unsub;
+          },(error)=>  console.log(`${error} postList`))  
+        return () => unsub();
 
       },[])
 
@@ -95,10 +94,8 @@ const PostList = ({data,title,repost}) => {
                      </Button>]}  >
                      <List.Item.Meta 
                       avatar= {<Avatar  size={64} icon={<UserOutlined />} />}
-                        title={  <Typography.Title level={5}>
-                                {item.title}  
-                                </Typography.Title>
-                              }
+                        title={item.title}  
+                             
                     description= {
                       <Typography.Text
                       style={{color:'#00766c'}}>

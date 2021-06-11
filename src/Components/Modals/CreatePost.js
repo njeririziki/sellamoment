@@ -71,15 +71,15 @@ const CreatePost = ({visible,onCancel}) => {
                 },
               ]}
             >
-              <Input />
+              <Input type='text' />
             </Form.Item>
-            <Form.Item
+            {/* <Form.Item
               name="authorname"
               label="Author's Name" >
                 <Input/>
               </Form.Item>
          
-          
+           */}
           <Form.Item
             label="Write post"
             name="content"

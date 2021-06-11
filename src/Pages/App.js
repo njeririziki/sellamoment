@@ -16,7 +16,7 @@ const [visible,setVisible] =useState(false)
   return (
     <AdminProvider>
       <div className="App">
-      <PageHeader subtitle='Dashboard'/>
+      <PageHeader subtitle='Dashboard' styles="Header"/>
      <div className='Content'>
        {/* <div>
        <Empty 
@@ -26,7 +26,12 @@ const [visible,setVisible] =useState(false)
        </div> */}
     <PostList title= 'Recent Posts'/>
      <Divider  orientation='left' > My posts</Divider>
-      <Unverified  title='Posts' buttonName='create a post' openModal={visible}/>
+     <Button type='default' className="Button"
+     style={{ alignSelf:'flex-end',backgroundColor:'#88c399',color:'#ffffff',}}
+      onClick={()=>setVisible(true)}>
+        create a post
+      </Button>
+      <Unverified  title='Posts'  openModal={visible}/>
       <br/> <br/>
      <AdminList title='Admin List'/>
        </div> 

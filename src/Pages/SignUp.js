@@ -22,16 +22,17 @@ const SignIn = ({history}) => {
         
             try {
                 await projectAuth.createUserWithEmailAndPassword(values.email,values.password)
-                .then(user=> {
-                    console.log(user)
-                    // user.updateProfile({
-                    //     displayName: values.username
-                    // })
+                .then((res)=> {
+                    console.log(res)
+                    console.log(values.username)
+                    const user = projectAuth.currentUser
+                    user.updateProfile({
+                        displayName: values.username
+                     });
+                     message.success( `${user.displayName} welcome to sellamoment`)
                 }).catch((err)=> console.log(`error creating user ${err}`));
     
-                    message.success('Successfuly logged in')
-
-        
+                    message.success('Successfuly registered')
         }catch(error){
            message.error(` Encountering ${error}`);
            console.log(`error creating user ${error}`)

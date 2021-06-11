@@ -3,9 +3,10 @@ import {PageHeader,Button} from 'antd'
 import {AdminContext} from '../Context/AdminContext'
 import {Link, useLocation,withRouter } from 'react-router-dom'
 import { projectAuth } from '../Firebase/config';
+import '../styles/App.css'
 
 
-const Header = ({subtitle}) => {
+const Header = ({subtitle,styles}) => {
     const {admin}= useContext(AdminContext)
     const [userDash, setUserDash] = useState(true)
       const location = useLocation()
@@ -19,22 +20,22 @@ const Header = ({subtitle}) => {
       }, [location])
      
     return ( 
-    <div style={{backgroundColor:'#ecfffd'}}>
+    <div className="Header">
     <PageHeader
     title= 'Sellamoment'
     subtitle={subtitle}
     extra={
         admin? [ 
             <Link to= { userDash?'/admin' :'/'}>
-                <Button type='default' >
+                <Button type='primary' >
             {userDash? 'Log In as Admin': 'Log in as user'}
               </Button>
             </Link>
            
-    ] :  <Button type='default' 
+    ] :  <Button type='primary' 
          onClick={()=> projectAuth.signOut()}>
-        Log out
-    </Button> } 
+                    Log out
+                </Button> } 
     />    
  
     </div> );

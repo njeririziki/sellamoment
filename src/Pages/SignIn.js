@@ -29,12 +29,11 @@ const SignIn = ({history}) => {
         setLoading(true)
         
             try {
-                await projectAuth.signInWithEmailAndPassword(values);
+                await projectAuth.signInWithEmailAndPassword(values.email,values.password);
     
                      history.push("/");
                     message.success('Sucessfuly logged in')
-
-        
+ 
         }catch(error){
            message.error(` Encountering ${error}`);
 

@@ -14,20 +14,22 @@ const PostList = ({title}) => {
 
    React.useEffect(()=>{
     const unsub = projectFirestore.collection('Posts') 
-      .orderBy('createdAt')
-         .get().then((docSnapshot)=>{
-          const post=[];
-         docSnapshot.forEach((doc)=>{
-              post.push({
-                  title:  doc.data().Title,
-                  author:doc.data().Author,
-                  content:doc.data().Content,
-                  status: doc.data().Status,
-                  key: doc.id})  
-            });
-            setValues(post) ; 
-        }).catch ((error)=>alert(error)) 
-      return () => unsub;
+        .orderBy('createdAt','desc')
+           .onSnapshot((docSnapshot)=>{
+            const post=[];
+           docSnapshot.docs.forEach((doc)=>{
+                post.push({
+                    title:  doc.data().Title,
+                    author:doc.data().Author,
+                    content:doc.data().Content,
+                    status: doc.data().Status,
+                    key: doc.id})  
+              });
+              setValues(post) ; 
+          },(error)=>  console.log(`${error} postList`)) 
+        
+      return () => unsub();
+
 
     },[])
 
@@ -49,10 +51,8 @@ const PostList = ({title}) => {
               <List.Item.Meta 
              avatar= {<Avatar 
               size={64} icon={<StarOutlined />} />}
-              title={  <Typography.Title level={5}>
-                      {item.title}  
-                       </Typography.Title>
-                    }
+              title={item.title}  
+                     
               description= {
                 <Typography.Text style={{color:'#00766c'}}>
              Post by {item.author? item.author :'anonymous'}

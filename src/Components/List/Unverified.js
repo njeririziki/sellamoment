@@ -24,13 +24,12 @@ const PostList = ({data,title,repost, openModal,buttonName}) => {
       
       React.useEffect(()=>{
       const user = projectAuth.currentUser.uid
-      const unsub = projectFirestore.collection('Posts') 
-        .orderBy('createdAt')
-   
-           .get().then((docSnapshot)=>{
+      const unsub = projectFirestore.collection('Posts')
+      .where("uid","==", user)
+        .orderBy('createdAt','desc')
+           .onSnapshot((docSnapshot)=>{
             const post=[];
-          
-           docSnapshot.forEach((doc)=>{
+           docSnapshot.docs.forEach((doc)=>{
                 post.push({
                      title:  doc.data().Title,
                     author:doc.data().Author,
@@ -39,8 +38,8 @@ const PostList = ({data,title,repost, openModal,buttonName}) => {
                     key: doc.id})  
               });
               setValues(post) ; 
-          }).catch ((error)=>alert(error)) 
-        return () => unsub;
+          },(error)=> console.log(error)) 
+        return () => unsub();
 
       },[])
 
@@ -69,23 +68,9 @@ const PostList = ({data,title,repost, openModal,buttonName}) => {
 
      return (
          <div>
-           <div style={{  display:'flex',justifyContent:'space-between',
-              alignItems:'center' ,padding:' 2em '}}>
-         <Typography.Title level={5}>
-             {title}
-             </Typography.Title>   
-        <Button
-        style={{ alignSelf:'flex-end',backgroundColor:'#88c399',color:'#ffffff',}}
-        
-        type='default'
-        onClick={openModal}
-       // icon={<Plus size={'1em'}/>}
-       >
-         {buttonName}
-        </Button>
-        </div>
+           {values?
          <List
-        
+         header = 'Posts'
          itemLayout="vertical"
          dataSource={values}
          rowKey={values.key}
@@ -110,10 +95,8 @@ const PostList = ({data,title,repost, openModal,buttonName}) => {
                      </a>]}  >
                      <List.Item.Meta 
              avatar= {<Avatar  size={64} icon={<UserOutlined />} />}
-              title={  <Typography.Title level={5}>
-                      {item.title}  
-                       </Typography.Title>
-                    }
+              title= {item.title}  
+                      
                     />
               {/* {edit? 
               <EditForm key={item.key} defValue={item.content}
@@ -136,6 +119,8 @@ const PostList = ({data,title,repost, openModal,buttonName}) => {
                </List.Item>)}
     
        />
+       : '' }
+     
    
        </div>
        )}
