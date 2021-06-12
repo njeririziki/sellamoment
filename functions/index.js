@@ -18,6 +18,7 @@ exports.verifiedPost= functions.firestore
           content: reviewedPost.Content,
            uid:reviewedPost.uid,
            date: reviewedPost.createdAt,
+           postTime:reviewedPost.postTime,
       })
     } else{
         console.log('functions here post not verified 🤔')

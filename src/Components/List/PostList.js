@@ -19,6 +19,7 @@ const PostList = ({title}) => {
                     title:  doc.data().title,
                     author:doc.data().author,
                     content:doc.data().content,
+                    postTime:doc.data().postTime,
                     key: doc.id
                   })  
               });
@@ -44,7 +45,8 @@ const PostList = ({title}) => {
                      
               description= {
                 <Typography.Text style={{color:'#00766c'}}>
-             Post by {item.author? item.author :'anonymous'}
+             Post by {item.author? item.author :'anonymous'} <br/> 
+             {item.postTime}
               </Typography.Text>
              }
               />

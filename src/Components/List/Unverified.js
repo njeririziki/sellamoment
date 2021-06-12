@@ -33,6 +33,7 @@ const PostList = ({data,title,repost, openModal,buttonName}) => {
                     author:doc.data().Author,
                     content:doc.data().Content,
                     status: doc.data().Status,
+                    postTime:doc.data().postTime ,
                     key: doc.id})  
               });
               setValues(post) ; 
@@ -85,7 +86,7 @@ const PostList = ({data,title,repost, openModal,buttonName}) => {
                      <List.Item.Meta 
              avatar= {<Avatar  size={64} icon={<UserOutlined />} />}
               title= {item.title}  
-                      
+               description={<p> {item.postTime} </p>}       
                     />
                <Typography.Text 
                  

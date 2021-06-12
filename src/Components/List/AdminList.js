@@ -21,6 +21,7 @@ const PostList = ({title}) => {
                     author:doc.data().Author,
                     content:doc.data().Content,
                     status: doc.data().Status,
+                     postTime:doc.data().postTime ,
                     key: doc.id})  
               });
               setValues(post) ; 
@@ -113,7 +114,8 @@ const PostList = ({title}) => {
                     description= {
                       <Typography.Text
                       style={{color:'#00766c'}}>
-                      Post by {item.author? item.author :'anonymous'}
+                      Post by {item.author? item.author :'anonymous'}<br/>
+                      {item.postTime}
                         </Typography.Text>
                       }
                         />

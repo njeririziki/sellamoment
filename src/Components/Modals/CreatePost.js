@@ -1,22 +1,24 @@
 import React from 'react';
 import { Modal, Form, Input,message } from 'antd';
+import moment from 'moment'
 import {projectFirestore,projectAuth,date} from  '../../Firebase/config'
+
 
 const CreatePost = ({visible,onCancel}) => {
     const [form] = Form.useForm();
-  
+
+    const time = moment().format('MMMM Do YYYY, h:mm:ss a')
 
     const onFinish = async (values) => {
-     console.log(values);
-      const {uid, displayName}= projectAuth.currentUser
-      
+      const {uid, displayName}= projectAuth.currentUser   
       try{
           await projectFirestore.collection('Posts').add({
             Title: values.title,
             Author: displayName,
             Content:values.content,
             Status: 'pending',
-            createdAt: date ,
+            createdAt: date,
+            postTime:time ,
             uid
           })
           onCancel();
@@ -29,7 +31,7 @@ const CreatePost = ({visible,onCancel}) => {
     return (
         <Modal
           visible={visible}
-          title=" Upload Article"
+          title=" Post Article"
           okText=" Post"
           cancelText="Cancel"
           onCancel={()=>{
