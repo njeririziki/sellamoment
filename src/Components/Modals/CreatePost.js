@@ -1,12 +1,10 @@
-import React, {useState, useEffect} from 'react';
-import { Button, Modal, Form, Input, Upload, InputNumber, message,Select } from 'antd';
-import { LoadingOutlined,UploadOutlined } from '@ant-design/icons';
-import {projectFirestore,firebase, projectAuth,date} from  '../../Firebase/config'
+import React from 'react';
+import { Modal, Form, Input,message } from 'antd';
+import {projectFirestore,projectAuth,date} from  '../../Firebase/config'
 
 const CreatePost = ({visible,onCancel}) => {
     const [form] = Form.useForm();
-    const [loading, setLoading] = useState(false)
-    const [file,setFile] = useState(null)
+  
 
     const onFinish = async (values) => {
      console.log(values);
@@ -32,7 +30,7 @@ const CreatePost = ({visible,onCancel}) => {
         <Modal
           visible={visible}
           title=" Upload Article"
-          okText=" Done"
+          okText=" Post"
           cancelText="Cancel"
           onCancel={()=>{
             form.resetFields();
@@ -73,20 +71,16 @@ const CreatePost = ({visible,onCancel}) => {
             >
               <Input type='text' />
             </Form.Item>
-            {/* <Form.Item
-              name="authorname"
-              label="Author's Name" >
-                <Input/>
-              </Form.Item>
-         
-           */}
+           
           <Form.Item
             label="Write post"
             name="content"
-       
           >
             <Input.TextArea 
-            rows={4} showCount allowClear autoSize />
+            rows={4} 
+            showCount 
+            allowClear 
+            autoSize={{ minRows: 4, maxRows: 8}} />
           </Form.Item>
           
        

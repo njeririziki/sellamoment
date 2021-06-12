@@ -48,21 +48,34 @@ const PostList = ({data,title,repost}) => {
           values[1].content= editableText])
           console.log( values)
       }
+      const onDecline = async (key) => {
+        console.log(`${key} passed down on decline`)
+        //  try{
+        //      await projectFirestore.collection('Posts').doc(key).update({
+        //        Status:'declined'
+        //      })
+        //      message.success('Post declined')
+        //  }catch(error) {
+        //      message.error(`error uploading doc ${error}`);
+        //      console.log(error)
+        //  }
+       }
   
-        const onRepost = async () => {
-          console.log(editableText,selectedKey)
-           try{
-               await projectFirestore.collection('Posts').doc(selectedKey).update({
-                 Content: editableText, 
-               })
-               //onCancel();
+        const onVerify = async (key) => {
+          console.log(`${key} passed down on verify`)
+          
+          //  try{
+          //      await projectFirestore.collection('Posts').doc(key).update({
+          //        Status:'verified'
+          //      })
+          //      //onCancel();
 
-               message.success('Repost successful')
+          //      message.success('Repost successful')
      
-           }catch(error) {
-               message.error(`error uploading doc ${error}`);
-               console.log(error)
-           }
+          //  }catch(error) {
+          //      message.error(`error uploading doc ${error}`);
+          //      console.log(error)
+          //  }
          }
 
      return (
@@ -77,19 +90,18 @@ const PostList = ({data,title,repost}) => {
          rowKey={values.key}
          renderItem={item=> (
            <List.Item 
-           key={item.key}
            actions={[   
               <Button
               style={{ backgroundColor:'#f05545',color:'#ffffff',}}
               type='default'
-            onClick={() => setEdit(true)}
+            onClick={onDecline}
           >
             Decline
           </Button> ,
            <Button
            style={{ backgroundColor:'#88c399',color:'#ffffff'}}
            type='default'
-           onClick={onRepost}>
+           onClick={onVerify}>
                      Verify
                      </Button>]}  >
                      <List.Item.Meta 
@@ -105,9 +117,8 @@ const PostList = ({data,title,repost}) => {
                         />
               
                <Typography.Text 
-                 
                  editable={{
-                   onStart: setSelectedKey(item.key),
+                   onStart: setEdit(true),
                    onChange: setEditableText,
                    onEnd: onEdit
                  }}

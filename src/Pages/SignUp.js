@@ -29,7 +29,8 @@ const SignIn = ({history}) => {
                     user.updateProfile({
                         displayName: values.username
                      });
-                     message.success( `${user.displayName} welcome to sellamoment`)
+                     message.success( `${values.username} welcome to sellamoment`);
+                     form.resetFields();
                 }).catch((err)=> console.log(`error creating user ${err}`));
     
                     message.success('Successfuly registered')

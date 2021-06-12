@@ -8,7 +8,7 @@ import {projectFirestore, projectAuth} from  '../../Firebase/config'
 
 
 const PostList = ({title}) => {
-   const [ellipsis,setEllipsis] = useState( false)
+  // const [ellipsis,setEllipsis] = useState( false)
    const [values,setValues] = useState([])
 
 
@@ -23,7 +23,8 @@ const PostList = ({title}) => {
                     author:doc.data().Author,
                     content:doc.data().Content,
                     status: doc.data().Status,
-                    key: doc.id})  
+                    key: doc.id
+                  })  
               });
               setValues(post) ; 
           },(error)=>  console.log(`${error} postList`)) 
@@ -42,8 +43,9 @@ const PostList = ({title}) => {
         </Typography.Title>}
         itemLayout="vertical"
         dataSource={values}
+       
         renderItem={item=> (
-          <List.Item key={item.key}
+          <List.Item
           // actions={[  <Link to='/'>
           //           <a>Manage</a>
           //           </Link>]}
@@ -59,16 +61,7 @@ const PostList = ({title}) => {
               </Typography.Text>
              }
               />
-               <Typography.Paragraph 
-                ellipsis={
-                  ellipsis
-                    ? {
-                        rows: 2,
-                        expandable: true,
-                        symbol: 'more',
-                      }
-                    : false
-                }>
+               <Typography.Paragraph >
                 {item.content}
                 </Typography.Paragraph>
               

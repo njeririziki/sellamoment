@@ -32,7 +32,8 @@ const SignIn = ({history}) => {
                 await projectAuth.signInWithEmailAndPassword(values.email,values.password);
     
                      history.push("/");
-                    message.success('Sucessfuly logged in')
+                    message.success('Sucessfuly logged in');
+                    form.resetFields();
  
         }catch(error){
            message.error(` Encountering ${error}`);

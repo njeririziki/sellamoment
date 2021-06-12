@@ -43,10 +43,14 @@ const PostList = ({data,title,repost, openModal,buttonName}) => {
 
       },[])
 
+      const showValues =()=>{
+        console.log(values)
+      }
+
       const onEdit =()=>{
         console.log(editableText,selectedKey);
-        setValues([...values, 
-          values[1].content= editableText])
+      //  setValues([...values, 
+      //    values[[0].content]= editableText])
           console.log( values)
       }
   
@@ -55,9 +59,8 @@ const PostList = ({data,title,repost, openModal,buttonName}) => {
            try{
                await projectFirestore.collection('Posts').doc(selectedKey).update({
                  Content: editableText, 
+                 Status:'verified'
                })
-               //onCancel();
-
                message.success('Repost successful')
      
            }catch(error) {
@@ -81,18 +84,18 @@ const PostList = ({data,title,repost, openModal,buttonName}) => {
               <Tag color='gold'>
            {item.status}
          </Tag>, 
-              <a href='/'
-            onClick={() => setEdit(true)}
+              <Button type='text'
+            onClick={showValues}
             style={{
               marginRight: 8,
             }}
           >
             Edit
-          </a> ,
-           <a  href='/'
+          </Button>,
+           <Button type='text'
            onClick={onRepost}>
-                     Save
-                     </a>]}  >
+                     Publish
+                     </Button>]}  >
                      <List.Item.Meta 
              avatar= {<Avatar  size={64} icon={<UserOutlined />} />}
               title= {item.title}  
@@ -107,6 +110,7 @@ const PostList = ({data,title,repost, openModal,buttonName}) => {
                <Typography.Text 
                  
                  editable={{
+                   tooltip:'edit post',
                    onStart: setSelectedKey(item.key),
                    onChange: setEditableText,
                    onEnd: onEdit

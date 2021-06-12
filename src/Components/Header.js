@@ -6,11 +6,14 @@ import { projectAuth } from '../Firebase/config';
 import '../styles/App.css'
 
 
-const Header = ({subtitle,styles}) => {
+const Header = ({subtitle}) => {
     const {admin}= useContext(AdminContext)
     const [userDash, setUserDash] = useState(true)
       const location = useLocation()
 
+      const logOut =()=>{
+        projectAuth.signOut()  
+      }
       useEffect(() => {
          
           if(location.pathname === '/admin'){
@@ -33,7 +36,7 @@ const Header = ({subtitle,styles}) => {
             </Link>
            
     ] :  <Button type='primary' 
-         onClick={()=> projectAuth.signOut()}>
+         onClick={logOut}>
                     Log out
                 </Button> } 
     />    

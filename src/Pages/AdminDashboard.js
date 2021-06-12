@@ -1,15 +1,17 @@
 import React, {useState} from 'react';
-import {Empty,Button,Divider} from 'antd'
+import {Button,Divider} from 'antd'
 import '../styles/App.css';
-import CreatePost from '../Components/Modals/CreatePost'
 import PageHeader from '../Components/Header'
 import AdminList from '../Components/List/AdminList'
 import AdminProvider from '../Context/AdminContext'
-import {projectFirestore,firebase, projectAuth} from  '../Firebase/config'
+import { projectAuth} from  '../Firebase/config'
 
 function AdminDash() {
-const [visible,setVisible] =useState(false)
 
+   
+const logOut =()=>{
+  projectAuth.signOut()  
+}
 
   return (
     <AdminProvider>
@@ -21,13 +23,11 @@ const [visible,setVisible] =useState(false)
 
      <Divider/>
       <Button type='primary' className="Button"
-         onClick={()=> projectAuth.signOut()}>
+         onClick={logOut}>
                     Log out
            </Button> 
        </div> 
-    
-     
-      <CreatePost visible={visible} onCancel={()=>setVisible(false)}/>
+  
     </div>
     </AdminProvider>
    
