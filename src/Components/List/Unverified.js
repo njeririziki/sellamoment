@@ -1,22 +1,13 @@
 import React, {useState} from 'react';
-import {  Form,Input,Tooltip, List, Avatar, Tag, Typography, Button, message } from 'antd';
+import { List, Avatar, Tag, Typography, Button, message } from 'antd';
 import { EditOutlined, UserOutlined } from '@ant-design/icons';
 import {projectFirestore, projectAuth} from  '../../Firebase/config'
 
-const EditForm = ({key,defValue,settext,onedit})=>{
- return(
-  <Form.Item>
-  <Input.TextArea id={key} defaultValue={defValue}
-  onChange={settext} onPressEnter={onedit}/>
-</Form.Item>
- )
 
-}
 
-const PostList = ({data,title,repost, openModal,buttonName}) => {
+const PostList = () => {
     const [editableText,setEditableText] = useState();
     const [values,setValues] = useState([])
-    const [edit, setEdit] = useState(false)
     const [selectedKey, setSelectedKey] =useState(null)
       
       
@@ -41,10 +32,6 @@ const PostList = ({data,title,repost, openModal,buttonName}) => {
         return () => unsub();
 
       },[])
-
-      const showValues =()=>{
-        console.log(values)
-      }
 
   
         const onRepost = async () => {
@@ -71,8 +58,8 @@ const PostList = ({data,title,repost, openModal,buttonName}) => {
          renderItem={item=> (
            <List.Item 
            key={item.key}
-           actions={item.status=== 'pending'? [ 
-              <Tag color='blue'>
+           actions={item.status=== 'declined'? [ 
+              <Tag color='volcano'>
            {item.status}
          </Tag>, 
            <Button type='text' 

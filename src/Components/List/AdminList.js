@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
-import {  Form,Input,Tooltip,Tag, List, Avatar, Typography, Button, message } from 'antd';
-import {  UserOutlined } from '@ant-design/icons';
+import { Tag, List, Avatar, Typography, Button, message } from 'antd';
+import { UserOutlined } from '@ant-design/icons';
 import {projectFirestore} from  '../../Firebase/config'
 
 
@@ -83,7 +83,10 @@ const PostList = ({title}) => {
          rowKey={values.key}
          renderItem={item=> (
            <List.Item 
-           actions={ item.status=== 'pending'?[ 
+           actions={ item.status !== 'verified'?[ 
+            <Tag color='blue'>
+            {item.status}
+          </Tag>,
             <Button
             type='dashed'
             onClick={onSaveEdit}>
@@ -121,7 +124,7 @@ const PostList = ({title}) => {
                         />
               
                <Typography.Text 
-                 editable={item.status=== 'pending'?{
+                 editable={item.status !== 'verified'?{
                    onStart: setSelectedKey(item.key),
                    onChange: (e)=>setEditableText(e),
                  }:false}
