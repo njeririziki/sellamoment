@@ -1,55 +1,42 @@
 import React, {useState} from 'react';
-import {  Tooltip, List, Avatar, Typography } from 'antd';
-import moment from 'moment';
-import {Link} from 'react-router-dom'
+import {  List, Avatar, Typography } from 'antd';
 import { StarOutlined } from '@ant-design/icons';
-import {projectFirestore, projectAuth} from  '../../Firebase/config'
+import {projectFirestore} from  '../../Firebase/config'
 
 
 
 const PostList = ({title}) => {
-  // const [ellipsis,setEllipsis] = useState( false)
+  
    const [values,setValues] = useState([])
 
-
    React.useEffect(()=>{
-    const unsub = projectFirestore.collection('Posts') 
-        .orderBy('createdAt','desc')
+    const unsub = projectFirestore.collection('VerifiedPosts') 
+        .orderBy('date','desc').limit(5)
            .onSnapshot((docSnapshot)=>{
             const post=[];
            docSnapshot.docs.forEach((doc)=>{
                 post.push({
-                    title:  doc.data().Title,
-                    author:doc.data().Author,
-                    content:doc.data().Content,
-                    status: doc.data().Status,
+                    title:  doc.data().title,
+                    author:doc.data().author,
+                    content:doc.data().content,
                     key: doc.id
                   })  
               });
               setValues(post) ; 
-          },(error)=>  console.log(`${error} postList`)) 
-        
+          },(error)=>  console.log(`${error} postList`))   
       return () => unsub();
-
-
     },[])
 
     return (
         <div>
         <List
-     
         header={ <Typography.Title level={4}>
                    {title}
         </Typography.Title>}
         itemLayout="vertical"
         dataSource={values}
-       
         renderItem={item=> (
-          <List.Item
-          // actions={[  <Link to='/'>
-          //           <a>Manage</a>
-          //           </Link>]}
-          >
+          <List.Item key={item.key} >
               <List.Item.Meta 
              avatar= {<Avatar 
               size={64} icon={<StarOutlined />} />}
@@ -64,13 +51,7 @@ const PostList = ({title}) => {
                <Typography.Paragraph >
                 {item.content}
                 </Typography.Paragraph>
-              
-             {/* <div>  
-             { item.avatar? <Link href='/client_id' as={`/client_${item.key}`}>
-          <a>Manage</a>
-          </Link>:'' } 
-             </div>
-          */}
+ 
               </List.Item>)}
    
       />
@@ -79,14 +60,3 @@ const PostList = ({title}) => {
  
 export default PostList;
 
-// renderItem={item => (
-//   <li>
-//     <Comment
-//       actions={item.actions}
-//       author={item.author}
-//       avatar={item.avatar}
-//       content={item.content}
-//       datetime={item.datetime}
-//     />
-//   </li>
-// )}

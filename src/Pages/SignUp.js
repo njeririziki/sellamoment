@@ -1,9 +1,9 @@
-import React,{useEffect,useState} from 'react';
-import {Row, Grid, Form, Space, Input, Button, message, Card, Typography} from 'antd';
+import React,{useState} from 'react';
+import {Row, Grid, Form, Space, Input, Button, message, Typography} from 'antd';
 import '../styles/SignIn.css'
-import {UnlockOutlined,EyeOutlined,EyeInvisibleOutlined,QuestionCircleOutlined, } from '@ant-design/icons';
-import {withRouter, Link, Redirect}  from 'react-router-dom'
-import {projectAuth,projectFirestore} from '../Firebase/config'
+import {UnlockOutlined,EyeOutlined,EyeInvisibleOutlined, } from '@ant-design/icons';
+import {withRouter, Link, }  from 'react-router-dom'
+import {projectAuth} from '../Firebase/config'
 
 
 //, VisibilityOutlined, VisibilityOffOutlined, ContactSupportOutlined
@@ -30,12 +30,12 @@ const SignIn = ({history}) => {
                         displayName: values.username
                      });
                      message.success( `${values.username} welcome to sellamoment`);
+                     history.push('/');
                      form.resetFields();
                 }).catch((err)=> console.log(`error creating user ${err}`));
-    
                     message.success('Successfuly registered')
         }catch(error){
-           message.error(` Encountering ${error}`);
+            message.error(`Failed to register user.Please try again`);
            console.log(`error creating user ${error}`)
         };
         setLoading(false)
@@ -43,7 +43,7 @@ const SignIn = ({history}) => {
     }
 
     const onFinishFailed=(errorInfo)=>{
-    alert(`Failed to submit form ${errorInfo}`)
+    message.error(`Failed to register user.Please try again`)
     }
 
     return (
@@ -89,19 +89,11 @@ const SignIn = ({history}) => {
                            />
                     </FormItem>
                 
-                    <FormItem
-                        // className={styles[screens.xs ? 'mobile-button' : 'desktop-button']}
-                    >
+                    <FormItem >
                         <Button
                             size="large"
                             type= 'primary'
                             disabled={ disable}
-                            style={disable
-                                ? { width:'max-content',}
-                                : { width:'max-content',
-                                    backgroundColor: '#000000',
-                                    color: '#ffffff',
-                                    boxShadow: 'none'}}
                             loading={loading}
                             htmlType="submit"
                            
@@ -119,14 +111,9 @@ const SignIn = ({history}) => {
                         </Typography>  
                      </Link>    
                     </FormItem>
-                    
-            
+
                 </Form>
-          
-
-
-
-
+ 
     </Space>
       
       );

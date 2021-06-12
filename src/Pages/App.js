@@ -33,7 +33,6 @@ const [visible,setVisible] =useState(false)
       </Button>
       <Unverified  title='Posts'  openModal={visible}/>
       <br/> <br/>
-     <AdminList title='Admin List'/>
        </div> 
      
       <CreatePost visible={visible} onCancel={()=>setVisible(false)}/>

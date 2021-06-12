@@ -1,33 +1,22 @@
 import React, {useState} from 'react';
-import {  Form,Input,Tooltip, List, Avatar, Typography, Button, message } from 'antd';
-import moment from 'moment';
-import {Link} from 'react-router-dom'
-import { RestFilled, UserOutlined } from '@ant-design/icons';
-import {projectFirestore, projectAuth} from  '../../Firebase/config'
+import {  Form,Input,Tooltip,Tag, List, Avatar, Typography, Button, message } from 'antd';
+import {  UserOutlined } from '@ant-design/icons';
+import {projectFirestore} from  '../../Firebase/config'
 
-const EditForm = ({key,defValue,settext,onedit})=>{
- return(
-  <Form.Item>
-  <Input.TextArea id={key} defaultValue={defValue}
-  onChange={settext} onPressEnter={onedit}/>
-</Form.Item>
- )
 
-}
-
-const PostList = ({data,title,repost}) => {
+const PostList = ({title}) => {
     const [editableText,setEditableText] = useState();
     const [values,setValues] = useState([])
-    const [edit, setEdit] = useState(false)
     const [selectedKey, setSelectedKey] =useState(null)
-      
+     
       
       React.useEffect(()=>{
       const unsub = projectFirestore.collection('Posts') 
+      .where("Status","==","pending")
         .orderBy('createdAt', 'desc')
            .onSnapshot((docSnapshot)=>{
             const post=[];
-           docSnapshot.forEach((doc)=>{
+           docSnapshot.docs.forEach((doc)=>{
                 post.push({
                     title:  doc.data().Title,
                     author:doc.data().Author,
@@ -41,46 +30,50 @@ const PostList = ({data,title,repost}) => {
 
       },[])
 
-      const onEdit =()=>{
+      const onSaveEdit = async()=>{
         console.log(editableText,selectedKey);
-         console.log(values.findIndex(key => key === selectedKey))
-        setValues([...values, 
-          values[1].content= editableText])
-          console.log( values)
+        try{
+          await projectFirestore.collection('Posts').doc(selectedKey).update({
+            Content: editableText, 
+            Status:'verified'
+          })
+          message.success('Repost successful')
+
+      }catch(error) {
+          message.error(`error uploading edits please try again`);
+          console.log(error)
+      }
+         
       }
       const onDecline = async (key) => {
         console.log(`${key} passed down on decline`)
-        //  try{
-        //      await projectFirestore.collection('Posts').doc(key).update({
-        //        Status:'declined'
-        //      })
-        //      message.success('Post declined')
-        //  }catch(error) {
-        //      message.error(`error uploading doc ${error}`);
-        //      console.log(error)
-        //  }
+         try{
+             await projectFirestore.collection('Posts').doc(key).update({
+               Status:'declined'
+             })
+             message.success('Post declined')
+         }catch(error) {
+             message.error(`Error updating document please check your intenet connection`);
+             console.log(error)
+         }
        }
   
         const onVerify = async (key) => {
           console.log(`${key} passed down on verify`)
           
-          //  try{
-          //      await projectFirestore.collection('Posts').doc(key).update({
-          //        Status:'verified'
-          //      })
-          //      //onCancel();
-
-          //      message.success('Repost successful')
+           try{
+               await projectFirestore.collection('Posts').doc(key).update({
+                 Status:'verified'
+               })
+               message.success('Verified')
      
-          //  }catch(error) {
-          //      message.error(`error uploading doc ${error}`);
-          //      console.log(error)
-          //  }
+           }catch(error) {
+               message.error(`error uploading doc ${error}`);
+               console.log(error)
+           }
          }
 
      return (
-         <div>
-          
          <List
          header={<Typography.Title level={4}>
                 {title}
@@ -90,20 +83,30 @@ const PostList = ({data,title,repost}) => {
          rowKey={values.key}
          renderItem={item=> (
            <List.Item 
-           actions={[   
+           actions={ item.status=== 'pending'?[ 
+            <Button
+            type='dashed'
+            onClick={onSaveEdit}>
+                     Save Edits
+                    </Button>,  
               <Button
               style={{ backgroundColor:'#f05545',color:'#ffffff',}}
               type='default'
-            onClick={onDecline}
+            onClick={()=>onDecline(item.key)}
           >
             Decline
           </Button> ,
            <Button
            style={{ backgroundColor:'#88c399',color:'#ffffff'}}
            type='default'
-           onClick={onVerify}>
+           onClick={()=>onVerify(item.key)}>
                      Verify
-                     </Button>]}  >
+                     </Button>]
+                     :[
+                      <Tag color='green'>
+                      {item.status}
+                    </Tag>
+                     ]}  >
                      <List.Item.Meta 
                       avatar= {<Avatar  size={64} icon={<UserOutlined />} />}
                         title={item.title}  
@@ -118,9 +121,8 @@ const PostList = ({data,title,repost}) => {
               
                <Typography.Text 
                  editable={{
-                   onStart: setEdit(true),
-                   onChange: setEditableText,
-                   onEnd: onEdit
+                   onStart: setSelectedKey(item.key),
+                   onChange: (e)=>setEditableText(e),
                  }}
                 >
                {item.content} 
@@ -132,7 +134,7 @@ const PostList = ({data,title,repost}) => {
     
        />
    
-       </div>
+     
        )}
   
  export default PostList;

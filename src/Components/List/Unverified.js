@@ -1,8 +1,6 @@
 import React, {useState} from 'react';
 import {  Form,Input,Tooltip, List, Avatar, Tag, Typography, Button, message } from 'antd';
-import moment from 'moment';
-import {Link} from 'react-router-dom'
-import { RestFilled, UserOutlined } from '@ant-design/icons';
+import { EditOutlined, UserOutlined } from '@ant-design/icons';
 import {projectFirestore, projectAuth} from  '../../Firebase/config'
 
 const EditForm = ({key,defValue,settext,onedit})=>{
@@ -47,21 +45,14 @@ const PostList = ({data,title,repost, openModal,buttonName}) => {
         console.log(values)
       }
 
-      const onEdit =()=>{
-        console.log(editableText,selectedKey);
-      //  setValues([...values, 
-      //    values[[0].content]= editableText])
-          console.log( values)
-      }
   
         const onRepost = async () => {
           console.log(editableText,selectedKey)
            try{
                await projectFirestore.collection('Posts').doc(selectedKey).update({
                  Content: editableText, 
-                 Status:'verified'
-               })
-               message.success('Repost successful')
+                 Status:'pending'
+               }) 
      
            }catch(error) {
                message.error(`error uploading doc ${error}`);
@@ -71,7 +62,6 @@ const PostList = ({data,title,repost, openModal,buttonName}) => {
 
      return (
          <div>
-           {values?
          <List
          header = 'Posts'
          itemLayout="vertical"
@@ -80,52 +70,37 @@ const PostList = ({data,title,repost, openModal,buttonName}) => {
          renderItem={item=> (
            <List.Item 
            key={item.key}
-           actions={[ 
-              <Tag color='gold'>
+           actions={item.status=== 'pending'? [ 
+              <Tag color='blue'>
            {item.status}
          </Tag>, 
-              <Button type='text'
-            onClick={showValues}
-            style={{
-              marginRight: 8,
-            }}
-          >
-            Edit
-          </Button>,
-           <Button type='text'
+           <Button type='text' 
            onClick={onRepost}>
-                     Publish
-                     </Button>]}  >
+                     Save 
+                     </Button>]
+                     :[   <Tag color='green'>
+                           {item.status}
+                         </Tag>,
+                     ]}  >
                      <List.Item.Meta 
              avatar= {<Avatar  size={64} icon={<UserOutlined />} />}
               title= {item.title}  
                       
                     />
-              {/* {edit? 
-              <EditForm key={item.key} defValue={item.content}
-                settext={ 
-                  (e,)=> setValues([...values, 
-                   values[1].content= e.target.value])
-                }  onedit={onEdit}/>  */}
                <Typography.Text 
                  
-                 editable={{
+                 editable={
+                   item.status=== 'pending'? {
+                     icon:<EditOutlined/>,
                    tooltip:'edit post',
                    onStart: setSelectedKey(item.key),
-                   onChange: setEditableText,
-                   onEnd: onEdit
-                 }}
+                   onChange: (e)=> setEditableText(e),
+                 }: false}
                 >
                {item.content} 
                    </Typography.Text> 
-           
-          
                </List.Item>)}
-    
        />
-       : '' }
-     
-   
        </div>
        )}
   

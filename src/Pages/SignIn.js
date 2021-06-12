@@ -1,9 +1,9 @@
-import React,{useEffect,useState} from 'react';
-import {Row, Grid, Form, Space, Input, Button, message, Card, Typography} from 'antd';
+import React,{useState} from 'react';
+import { Grid, Form, Space, Input, Button, message,Typography} from 'antd';
 import '../styles/SignIn.css'
 import {UnlockOutlined,EyeOutlined,EyeInvisibleOutlined,QuestionCircleOutlined, } from '@ant-design/icons';
-import {withRouter, Link, Redirect}  from 'react-router-dom'
-import {projectAuth,projectFirestore} from '../Firebase/config'
+import {withRouter, Link}  from 'react-router-dom'
+import {projectAuth} from '../Firebase/config'
 
 
 //, VisibilityOutlined, VisibilityOffOutlined, ContactSupportOutlined
@@ -17,14 +17,6 @@ const SignIn = ({history}) => {
   
     const [loading,setLoading]= useState(false)
 
-    // useEffect(() => {
-    //  if(loading){
-    //      setLoad(true)
-    //  }
-    //  if(loggedIn){
-    //      router.push('/')
-    //  }
-    // }, [loggedIn,loading])
     const onFinish = async(values)=>{
         setLoading(true)
         
@@ -37,6 +29,8 @@ const SignIn = ({history}) => {
  
         }catch(error){
            message.error(` Encountering ${error}`);
+           message.error(`Failed to register user.Please try again`);
+           console.log(`error creating user ${error}`)
 
         };
         setLoading(false)
@@ -85,22 +79,13 @@ const SignIn = ({history}) => {
                            />
                     </FormItem>
                     <FormItem
-                        // className={styles[screens.xs ? 'mobile-button' : 'desktop-button']}
+                      
                     >
                         <Button
                             size="large"
                             type= 'primary'
                             disabled={ disable}
-                            style={disable
-                                ? { width:'max-content',}
-                                : { width:'max-content',
-                                    backgroundColor: '#000000',
-                                    color: '#ffffff',
-                                    boxShadow: 'none'}}
-                            loading={loading}
-                            htmlType="submit"
-                           
-                           >
+                            htmlType="submit" >
                             Sign in 
                         </Button>
                     </FormItem>
