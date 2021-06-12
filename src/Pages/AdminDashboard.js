@@ -18,9 +18,7 @@ const logOut =()=>{
       <div className="App">
       <PageHeader subtitle='Dashboard'/>
      <div className='Content'>
-    
       <AdminList title='Recent Posts'/>
-
      <Divider/>
       <Button type='primary' className="Button"
          onClick={logOut}>

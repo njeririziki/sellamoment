@@ -12,7 +12,6 @@ const PostList = ({title}) => {
       
       React.useEffect(()=>{
       const unsub = projectFirestore.collection('Posts') 
-      .where("Status","==","pending")
         .orderBy('createdAt', 'desc')
            .onSnapshot((docSnapshot)=>{
             const post=[];
@@ -87,7 +86,7 @@ const PostList = ({title}) => {
             <Button
             type='dashed'
             onClick={onSaveEdit}>
-                     Save Edits
+                     Save Edit
                     </Button>,  
               <Button
               style={{ backgroundColor:'#f05545',color:'#ffffff',}}
@@ -120,10 +119,10 @@ const PostList = ({title}) => {
                         />
               
                <Typography.Text 
-                 editable={{
+                 editable={item.status=== 'pending'?{
                    onStart: setSelectedKey(item.key),
                    onChange: (e)=>setEditableText(e),
-                 }}
+                 }:false}
                 >
                {item.content} 
                    </Typography.Text> 
